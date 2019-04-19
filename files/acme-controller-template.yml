@@ -18,6 +18,7 @@ parameters:
 - name: REPLICA_COUNT
   value: "1"
 objects:
+
 - apiVersion: v1
   kind: ClusterRole
   metadata:
@@ -38,15 +39,19 @@ objects:
     - update
     - patch
     - delete
+  
   - apiGroups:
     - "route.openshift.io"
     resources:
     - routes/custom-host
+    - routes/status
     verbs:
     - create
     - update
     - delete
     - patch
+    - watch
+  
   - apiGroups:
     - ""
     resources:
@@ -55,6 +60,7 @@ objects:
     - create
     - update
     - patch
+  
   - apiGroups:
     - ""
     resources:
@@ -69,6 +75,7 @@ objects:
     - update
     - patch
     - delete
+  
   - apiGroups:
     - ""
     resources:
@@ -82,6 +89,16 @@ objects:
     - update
     - patch
     - delete
+  
+  - apiGroups:
+    - ""
+    resources:
+    - namespaces
+    verbs:
+    - get
+    - list
+    - watch
+
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
@@ -186,3 +203,18 @@ objects:
           kind: ImageStreamTag
           name: acme-controller:latest
     - type: ConfigChange
+- kind: Service
+  apiVersion: v1
+  metadata:
+    labels:
+      app: acme-controller
+    name: acme-controller
+  spec:
+    selector:
+      app: acme-controller
+    ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 5000
+
