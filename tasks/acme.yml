@@ -24,6 +24,7 @@
     namespace: "{{ appuio_openshift_acme_namespace }}"
     template: "{{ tempdir }}/template.yml"
     arguments:
+      NAMESPACE: "{{ appuio_openshift_acme_namespace }}"
       OPENSHIFT_ACME_ACMEURL: "{{ acmeurl | mandatory }}"
       OPENSHIFT_ACME_LOGLEVEL: "{{ appuio_openshift_acme_loglevel | mandatory }}"
       DOCKER_IMAGE: "{{ appuio_openshift_acme_docker_image | mandatory }}"
@@ -36,9 +37,3 @@
     state: absent
   changed_when: False
 
-- name: Cluster role assignement
-  openshift_policy:
-    cluster_roles:
-    - acme-controller
-    users:
-    - "system:serviceaccount:{{ appuio_openshift_acme_namespace }}:acme-controller"
